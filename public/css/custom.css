@@ -24,6 +24,20 @@
   text-align: center;
 }
 
+
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+}
+
+
+.form-group, .btn-primary {
+  margin: 20px auto;
+  width: 300px;
+  
+}
+
 /*
  * Extra utilities
  */
@@ -55,3 +69,10 @@
 .overflow-hidden {
   overflow: hidden;
 }
+<<<<<<< HEAD
+
+=======
+
+
+
+>>>>>>> b5905ac80ff9b9e147cff93665d1e0d76bdbf89e

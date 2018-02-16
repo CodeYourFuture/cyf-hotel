@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>CYF Hotel Reservations</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/custom.css" />
+
+</head>
+
+<body>
+  <nav class="site-header sticky-top py-1">
+    <div class="container d-flex flex-column flex-md-row justify-content-between">
+      <a class="py-2" href="/">
+        CYF Hotel 
+      </a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-10">
+        <h1>Reservations</h1>
+      </div>
+      <div class="col-2">
+        <button type="submit" class="btn btn-primary fn-fetch">Fetch reservations</button>
+    <div class="row">
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer ID</th>
+              <th>Room ID</th>
+              <th>Check in date</th>
+              <th>Check out date</th>
+              <th>Room price</th>
+              <th>Note</th>
+              <th> </th>
+              <th> </th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr>
+              <th scope="row">0</th>
+              <td>34</td>
+              <td>26</td>
+              <td>2019-01-20</td>
+              <td>2019-01-02</td>
+              <td>£200</td>
+              <td>Hi</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.10/handlebars.js"></script>
+  <script id="template" type="text/x-handlebars-template">
+      <tr>
+        <th scope="row" ><a href={{id}}>{{ id }}</a></th>
+        <td>{{ customerId }}</td>
+        <td>{{ roomId }}</td>
+        <td>{{ checkInDate }}</td>
+        <td>{{ checkOutDate }}</td>
+        <td>{{ roomPrice }}</td>
+        <td>{{ note }}</td>
+      </tr>
+    </script>
+  <script type="text/javascript">
+    $('.fn-fetch').on('click', event => {
+      event.preventDefault();
+
+      $.ajax({
+        method: 'GET',
+        url: '/api/reservations/'
+      }).done(data => {
+        const source = $("#template").html();
+        const template = Handlebars.compile(source);
+
+        const rows = data.reservations.map(reservation => {
+          return template(reservation);
+        });
+
+        $('#rows').html(rows.join());
+      });
+    });
+  </script>
+</body>
+
+</html>

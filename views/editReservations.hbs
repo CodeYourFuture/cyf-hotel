@@ -1,0 +1,74 @@
+{{!-- <h1>Edit Reservation</h1>
+    <div class="hi">
+        <form action = "/new-reservation" method = "POST">
+            <span>Id</span>
+            <input type="text" name="id" placeholder="Id" />
+            <span>customerId</span>
+            <input type="text" name="customerId" placeholder="customerId" />
+            <span>roomId</span>
+            <input type="text" name="roomId" placeholder="roomId " />
+            <span>checkInDate</span>
+            <input type="date" name="checkInDate" placeholder="checkInDate" />
+            <span>checkOutDate</span>
+            <input type="date" name="checkOutDate" placeholder="checkOutDate" />
+            <span>roomPrice</span>
+            <input type="text" name="roomPrice" placeholder="roomPrice" />
+            <span>note</span>
+            <input type="text" name="note" placeholder="note" />
+            <input type="submit" name="Submit" value = "send" />
+        </form> --}}
+
+        <div class="container">
+  <div class="row">
+    <div class="col-10">
+      <h1>Edit Reservations</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Room ID</th>
+            <th>Check in date</th>
+            <th>Check out date</th>
+            <th>Room price</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          {{!-- {{#each reservations}} --}}
+            <tr>
+              <th scope="row"><a href={{ this.id }}>{{ this.id }}</a></th>
+              <td>{{ this.customerId }}</td>
+              <td>{{ this.roomId }}</td>
+              <td>{{ this.checkInDate }}</td>
+              <td>{{ this.checkOutDate }}</td>
+              <td>{{ this.roomPrice }}</td>
+              <td>{{ this.note }}</td>
+            </tr>
+          {{!-- {{/each}} --}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+        <button type="submit" class="btn btn-secondary "><a href= "">Save changes</a></button>
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-secondary"><a href= "">cancel</a></button>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  </div>

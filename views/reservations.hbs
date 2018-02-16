@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="container">
+    <div class="row">
+      <div class="col-10">
+        <h1>Reservations</h1>
+      </div>
+      <div class="col-2">
+        <a class="btn btn-outline-primary fn-fetch" href= "new">New Reservations</a>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer ID</th>
+            <th>Room ID</th>
+            <th>Check in date</th>
+            <th>Check out date</th>
+            <th>Room price</th>
+            <th>Note</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          {{#each reservations}}
+            <tr>
+              <th scope="row"><a href={{ this.id }}>{{ this.id }}</a></th>
+              <td>{{ this.customerId }}</td>
+              <td>{{ this.roomId }}</td>
+              <td>{{ this.checkInDate }}</td>
+              <td>{{ this.checkOutDate }}</td>
+              <td>{{ this.roomPrice }}</td>
+              <td>{{ this.note }}</td>
+              <td><button type="submit" class="btn btn-warning "><a href= "edit">Edit</a></button></td>
+              <td><button type="delete" class="btn btn-danger "><a href = "">Delete</a></button></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
