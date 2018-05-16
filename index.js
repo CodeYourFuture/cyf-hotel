@@ -9,7 +9,7 @@ const apiRouter = require("./api");
 const app = express();
 const router = express.Router();
 
-const dbFilename = 'mydatabase.sqlite';
+const dbFilename = 'hotelbase.db';
 const sqlite = require('sqlite3').verbose();
 let db = new sqlite.Database(dbFilename);
 
@@ -40,11 +40,11 @@ app.listen(SERVER_PORT, () => {
 });
 
 app.get("/customers", function (req, res) {
-  db.all("SELECT title, firstname, surname, address " +
+  db.all("SELECT title, firstname, surname, email " +
     "FROM customers", function (err, rows) {
       rows.forEach(function (row) {
         console.log(row.title, row.firstname,
-          row.surname);
+          row.surname, row.email);
       });
       res.status(200).json({
         customers: rows
@@ -76,12 +76,11 @@ app.post("/customers/", function (req, res) {
   var ttl = req.body.title;
   var fnm = req.body.firstname;
   var snm = req.body.surname;
-  var adr = req.body.address;
-  db.run("INSERT INTO customers (title, firstname, surname, address) VALUES (?, ?, ?, ?)",
-      [ttl, fnm, snm, adr], function(err) {
+  var eml = req.body.email;
+  db.run("INSERT INTO customers (title, firstname, surname, email) VALUES (?, ?, ?, ?)",
+      [ttl, fnm, snm, eml], function(err) {
       if (err == null) {
         var rowid = this.lastID;  //get the PK
-        // console.log(typeof rowid);
         console.log(`New customer id = ${rowid}`);
         res.status(200).json({lastId: rowid.toString()});  // return the PK
       } else {
