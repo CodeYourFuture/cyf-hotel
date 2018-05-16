@@ -40,7 +40,7 @@ app.listen(SERVER_PORT, () => {
 });
 
 app.get("/customers", function (req, res) {
-  db.all("SELECT title, firstname, surname " +
+  db.all("SELECT title, firstname, surname, address " +
     "FROM customers", function (err, rows) {
       rows.forEach(function (row) {
         console.log(row.title, row.firstname,
@@ -76,13 +76,13 @@ app.post("/customers/", function (req, res) {
   var ttl = req.body.title;
   var fnm = req.body.firstname;
   var snm = req.body.surname;
-  var addr = req.body.addr;
-  console.log(req.body.firstname);
+  var adr = req.body.address;
   db.run("INSERT INTO customers (title, firstname, surname, address) VALUES (?, ?, ?, ?)",
-      [ttl, fnm, snm, addr], function(err) {
+      [ttl, fnm, snm, adr], function(err) {
       if (err == null) {
         var rowid = this.lastID;  //get the PK
-        console.log("New customer id = ${rowid}");
+        // console.log(typeof rowid);
+        console.log(`New customer id = ${rowid}`);
         res.status(200).json({lastId: rowid.toString()});  // return the PK
       } else {
         res.status(500).json({error: err});
