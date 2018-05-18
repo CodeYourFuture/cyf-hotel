@@ -57,16 +57,20 @@ app.get("/customers", function (req, res) {
 
 app.get("/customers/:id", function (req, res) {
   var id = req.params.id;
-  db.get("SELECT * FROM customers WHERE id = ?", [id],
-    function (err, row) {
-      if (err == null) {
-        res.status(200).json({
-          customer: row
-        });
-      } else {
-        res.status(500).json({ error: err });
-      }
-    });
+  if (id == parseInt(id)) {
+    db.get("SELECT * FROM customers WHERE id = ?", [id],
+      function (err, row) {
+        if (row === undefined) {
+          res.status(400).send(`A customer with an ID '${req.params.id}' hasn't been created yet`);
+        } else {
+          res.status(200).json({
+            customer: row
+          })
+        };
+      });
+  } else {
+    res.status(400).send(`Entered data by ID customer '${req.params.id}' is not an integer number`);
+  };
 });
 
 app.get("/customers/name/:surname", function (req, res) {
@@ -172,7 +176,7 @@ app.post('/reservations/', function (req, res) {
   db.get("SELECT * FROM customers WHERE id = ?", [cust_id], function (err, row) {
     console.log(row, typeof row);
     if (row === undefined) {
-      res.status(400).send(`A customer with an ID '${req.body.customer_id}' hasn't been created yet`);;
+      res.status(400).send(`A customer with an ID '${req.body.customer_id}' hasn't been created yet`);
     } else {
       db.run("INSERT INTO reservations (customer_id, rooms_id, checkin_date, checkout_date, price_per_night) VALUES (?, ?, ?, ?, ?)",
         [cust_id, rom_id, indate, outdate, price], function (err) {
