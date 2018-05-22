@@ -158,6 +158,25 @@ app.get("/invoices/paid/:paid", function (req, res) {
   };
 });
 
+app.get("/invoices/:id/:paid", function (req, res) {
+  var inv_id = req.params.id;
+  var paid = req.params.paid;
+  if (inv_id == parseInt(inv_id) && paid == parseInt(paid) && paid == 1) {
+    db.run("update invoices set paid = ? WHERE id = ?", [paid, inv_id],
+      function (err, row) {
+        if (err == null) {
+          res.status(200).send(
+            `Invoice_id = ${inv_id} set as paid = ${paid}`
+          );
+        } else {
+          res.status(500).json({ error: err });
+        }
+      });
+  } else {
+    res.status(400).send(`You should type integer number to change type of invoices`);
+  };
+});
+
 app.get("/reservations", function (req, res) {
   db.all("SELECT * FROM reservations", function (err, rows) {
     if (err == null) {
