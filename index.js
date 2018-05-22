@@ -8,13 +8,14 @@ const apiRouter = require("./api");
 
 const app = express();
 const router = express.Router();
+// const formidable = require(express-formidable);
 
 const dbFilename = 'hotelbase.db';
 const sqlite = require('sqlite3').verbose();
 let db = new sqlite.Database(dbFilename);
 db.run("PRAGMA foreign_keys = ON");
 
-
+// app.use(formidable());
 app.engine(
   "hbs",
   exphbs({
@@ -60,12 +61,16 @@ app.get("/customers/:id", function (req, res) {
   if (id == parseInt(id)) {
     db.get("SELECT * FROM customers WHERE id = ?", [id],
       function (err, row) {
-        if (row === undefined) {
-          res.status(400).send(`A customer with an ID '${req.params.id}' hasn't been created yet`);
+        if (err == null) {
+          if (row === undefined) {
+            res.status(400).send(`A customer with an ID '${req.params.id}' hasn't been created yet`);
+          } else {
+            res.status(200).json({
+              customer: row
+            });
+          };
         } else {
-          res.status(200).json({
-            customer: row
-          })
+          res.status(500).json({ error: err });
         };
       });
   } else {
@@ -135,6 +140,23 @@ app.get("/invoices/:id", function (req, res) {
     });
 });
 
+app.get("/invoices/paid/:paid", function (req, res) {
+  var paid = req.params.paid;
+  if (paid == parseInt(paid) && paid == 1) {
+    db.run("delete from invoices WHERE paid = ?", [paid],
+      function (err, row) {
+        if (err == null) {
+          res.status(200).send(
+            `All paid invoices has been deleted`
+          );
+        } else {
+          res.status(500).json({ error: err });
+        }
+      });
+  } else {
+    res.status(400).send(`You should type 1 to delete paid invoices`);
+  };
+});
 
 app.get("/reservations", function (req, res) {
   db.all("SELECT * FROM reservations", function (err, rows) {
@@ -174,7 +196,7 @@ app.post('/reservations/', function (req, res) {
   var outdate = req.body.checkout_date;
   var price = req.body.price_per_night;
   db.get("SELECT * FROM customers WHERE id = ?", [cust_id], function (err, row) {
-    console.log(row, typeof row);
+    // console.log(row, typeof row);
     if (row === undefined) {
       res.status(400).send(`A customer with an ID '${req.body.customer_id}' hasn't been created yet`);
     } else {
@@ -190,6 +212,25 @@ app.post('/reservations/', function (req, res) {
         });
     };
   });
+});
+
+app.get("/reservations/:customer_id/:rooms_id", function (req, res) {
+  var cust_id = req.params.customer_id;
+  var rom_id = req.params.rooms_id;
+  if (cust_id == parseInt(cust_id) && rom_id == parseInt(rom_id)) {
+    db.run("update reservations set rooms_id = ? WHERE customer_id = ?", [rom_id, cust_id],
+      function (err, row) {
+        if (err == null) {
+          res.status(200).send(
+            `Room_number = ${rom_id} changed for customer_id = ${cust_id}`
+          );
+        } else {
+          res.status(500).json({ error: err });
+        }
+      });
+  } else {
+    res.status(400).send(`You should type integer number to change room number`);
+  };
 });
 
 app.listen(SERVER_PORT, () => {
