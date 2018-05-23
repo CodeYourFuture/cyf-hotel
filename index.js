@@ -140,6 +140,7 @@ app.get("/invoices/:id", function (req, res) {
     });
 });
 
+// Allow users to delete a paid invoice from the database
 app.get("/invoices/paid/:paid", function (req, res) {
   var paid = req.params.paid;
   if (paid == parseInt(paid) && paid == 1) {
@@ -158,6 +159,7 @@ app.get("/invoices/paid/:paid", function (req, res) {
   };
 });
 
+// Provide the means to mark an invoice as paid
 app.get("/invoices/:id/:paid", function (req, res) {
   var inv_id = req.params.id;
   var paid = req.params.paid;
@@ -173,7 +175,7 @@ app.get("/invoices/:id/:paid", function (req, res) {
         }
       });
   } else {
-    res.status(400).send(`You should type integer number to change type of invoices`);
+    res.status(400).send(`You should type integer number 1 to change type of invoices`);
   };
 });
 
@@ -233,6 +235,7 @@ app.post('/reservations/', function (req, res) {
   });
 });
 
+// Make it possible for a customer’s room to be changed if necessary
 app.get("/reservations/:customer_id/:rooms_id", function (req, res) {
   var cust_id = req.params.customer_id;
   var rom_id = req.params.rooms_id;
