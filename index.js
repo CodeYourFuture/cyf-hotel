@@ -109,6 +109,44 @@ app.post("/customers/", function (req, res) {
     });
 });
 
+// Provide an endpoint for making changes to a customer’s data - provide all the column values, even if unchanged
+app.put('/customers/:id', function (req, res) {
+  var id = req.params.id;
+  var ttl = req.body.title;
+  var fnm = req.body.firstname;
+  var snm = req.body.surname;
+  var eml = req.body.email;
+  var cit = req.body.city;
+  var pos = req.body.postcode;
+  var count = req.body.country;
+  var tel = req.body.phone;
+  if (id == parseInt(id)) {
+    db.get("SELECT * FROM customers WHERE id = ?", [id],
+      function (err, row) {
+        if (err == null) {
+          if (row === undefined) {
+            res.status(400).send(`A customer with an ID '${req.params.id}' hasn't been created yet`);
+          } else {
+            if (ttl && fnm && snm && eml && cit && pos && count && tel) {
+              db.run("update customers set title = ?, firstname = ?, surname = ?, email = ?, city = ?, postcode = ?, country = ?, phone = ? WHERE id = ?", [ttl, fnm, snm, eml, cit, pos, count, tel, id], function (err, row) {
+                if (err == null) {
+                  console.log(`DATA USER ID = ${req.params.id} was changed`);
+                  res.status(200).send(`Total data changes = ${this.changes}`);
+                } else {
+                  res.status(500).json({ error: err });
+                };
+              });
+            } else {
+              res.status(400).send(`You should provide all data for customer`)
+            };
+          };
+        };
+      });
+  };
+});
+
+
+
 app.get("/invoices", function (req, res) {
   db.all("SELECT id, total, invoice_date, paid  " +
     "FROM invoices", function (err, rows) {
