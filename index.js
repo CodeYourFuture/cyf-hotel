@@ -92,6 +92,21 @@ app.get("/customers/name/:surname", function (req, res) {
     });
 });
 
+// Get customers where surname like %bla-bla%
+app.get("/customers/namelike/:surname", function (req, res) {
+  var surname = req.params.surname;
+  db.get(`SELECT * FROM customers WHERE surname like '%${req.params.surname}%'`,
+    function (err, row) {
+      if (err == null) {
+        res.status(200).json({
+          customer: row
+        });
+      } else {
+        res.status(500).json({ error: err });
+      }
+    });
+});
+
 app.post("/customers/", function (req, res) {
   var ttl = req.body.title;
   var fnm = req.body.firstname;
@@ -248,14 +263,13 @@ app.get("/reservations/:id", function (req, res) {
 });
 
 
-app.post('/reservations/', function (req, res) {
+app.post("/reservations/", function (req, res) {
   var cust_id = req.body.customer_id;
   var rom_id = req.body.rooms_id;
   var indate = req.body.checkin_date;
   var outdate = req.body.checkout_date;
   var price = req.body.price_per_night;
   db.get("SELECT * FROM customers WHERE id = ?", [cust_id], function (err, row) {
-    // console.log(row, typeof row);
     if (row === undefined) {
       res.status(400).send(`A customer with an ID '${req.body.customer_id}' hasn't been created yet`);
     } else {
@@ -292,6 +306,53 @@ app.get("/reservations/:customer_id/:rooms_id", function (req, res) {
     res.status(400).send(`You should type integer number to change room number`);
   };
 });
+// Delete reservations by ID
+app.delete("/reservations/:id", function (req, res) {
+  var id = req.params.id;
+  if (id == parseInt(id)) {
+    db.run("delete from reservations WHERE id = ?", [id],
+      function (err, row) {
+        if (err == null) {
+          res.status(200).send(
+            `Data from reservations ${id} has been deleted`
+          );
+        } else {
+          res.status(500).json({ error: err });
+        }
+      });
+  } else {
+    res.status(400).send(`You should type integer number to delete canceled reservations`);
+  };
+});
+
+// Get a list of all the reservations that start at a given date
+app.get("/reservations-start-date/:startDate", function (req, res) {
+  var date = req.params.startDate;
+  db.all("select * from reservations where checkin_date >= ?", [date], function (err, rows) {
+    if (err == null) {
+      res.status(200).json({
+        reservations: rows
+      });
+    } else {
+      res.status(500).json({ error: err });
+    }
+  });
+});
+
+// Get a list of all the reservations that is active at a given date
+app.get("/reservations-active-date/:activeDate", function (req, res) {
+  var date = req.params.activeDate;
+  db.all("select * from reservations where ? between checkin_date and checkout_date", [date], function (err, rows) {
+    if (err == null) {
+      res.status(200).json({
+        reservations: rows
+      });
+    } else {
+      res.status(500).json({ error: err });
+    }
+  });
+});
+
 
 app.listen(SERVER_PORT, () => {
   console.info(`Server started at http://localhost:${SERVER_PORT}`);
