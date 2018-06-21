@@ -43,12 +43,12 @@ app.get("/customers", function (req, res) {
   db.all("SELECT title, firstname, surname, email " +
     "FROM customers", function (err, rows) {
       if (err == null) {
-        rows.forEach(function (row) {
-          console.log(row.title, row.firstname,
-            row.surname, row.email);
+         rows.forEach(function (row) {
+           console.log(row.title, row.firstname,
+             row.surname, row.email);
         });
         res.status(200).json({
-          customers: rows
+          rows
         });
       } else {
         res.status(500).json({ error: err });
@@ -106,6 +106,21 @@ app.get("/customers/namelike/:surname", function (req, res) {
       }
     });
 });
+
+app.get('/api/customers-data', function (req, res) {
+  db.all(`Select customers.id, customers.title, customers.firstname, customers.surname, 
+  customers.email, reservations.rooms_id, reservations.checkin_date, reservations.checkout_date from reservations JOIN customers ON reservations.customer_id = customers.id`, [], 
+  function (err, rows) {
+    if (err) {
+      res.status(500).end()
+      console.log(err)
+    } else {
+      res.status(200).json({
+        rows
+      })
+    }
+  })
+})
 
 app.post("/customers/", function (req, res) {
   var ttl = req.body.title;
